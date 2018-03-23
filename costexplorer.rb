@@ -1,6 +1,10 @@
 require "aws-sdk"
 require "aws-sdk-costexplorer"
 require "json"
+require "date"
+
+start_day = Date.today.to_s.slice(0,8) + "01" # 月初
+end_day = (Date.today - 1).to_s # 実行日の前日
 
 creds = JSON.load(File.read("../Documents/credentials/aws_credentials.json")) # credentialsはファイル分ける
 Aws.config.update({
@@ -10,8 +14,8 @@ Aws.config.update({
 ce = Aws::CostExplorer::Client.new
 ce.get_cost_and_usage({
   time_period: {
-    start: "YearMonthDay", # required
-    end: "YearMonthDay", # required
+    start: start_day, # required
+  end: end_day, # required
   },
   granularity: "DAILY", # accepts DAILY, MONTHLY
   filter: {
@@ -37,7 +41,7 @@ ce.get_cost_and_usage({
     #   values: ["Value"],
     # },
   },
-  # metrics: ["MetricName"],
+  metrics: ["BlendedCost"],
   # group_by: [
   #   {
   #     type: "DIMENSION", # accepts DIMENSION, TAG
