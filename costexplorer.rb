@@ -3,7 +3,6 @@ require "aws-sdk-costexplorer"
 require "json"
 require "date"
 
-
 creds = JSON.load(File.read("../Documents/credentials/aws_credentials.json")) # credentialsはファイル分ける
 Aws.config.update({
   region: "us-east-1", # ap-northeast-1はinvalid region
@@ -18,7 +17,7 @@ ce = Aws::CostExplorer::Client.new
 ce.get_cost_and_usage({
   time_period: {
     start: start_day, # required
-  end: end_day, # required
+    end: end_day, # required
   },
   granularity: "DAILY", # accepts DAILY, MONTHLY
   filter: {
