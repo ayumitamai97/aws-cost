@@ -1,10 +1,8 @@
 require "aws-sdk"
 require "json"
 
-File.open("../Documents/credentials/aws_credentials.json") do |j| # credentialsはファイル分ける
-  cred = JSON.load(j)
-  s3 = AWS::S3.new(
-    :access_key_id => cred["Access key ID"],
-    :secret_access_key => cred["Secret access key"]
-  )
-end
+creds = JSON.load(File.read("../Documents/credentials/aws_credentials.json"))# credentialsはファイル分ける
+s3 = AWS::S3.new(
+  :access_key_id => creds["Access key ID"],
+  :secret_access_key => creds["Secret access key"]
+)
