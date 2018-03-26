@@ -35,13 +35,12 @@ ce = Aws::CostExplorer::Client.new
 # })
 #
 # values = []
+#
+# services.dimension_values.each do |service|
+#    values << service.value
+# end
 
-for num in 0..30 # サービス31個
-   values << services[0][num].value
-end
-puts values
-
-resp = ce.get_cost_and_usage(
+responses = ce.get_cost_and_usage(
   params={
     time_period: {
       start: start_day, # required
@@ -67,15 +66,13 @@ resp = ce.get_cost_and_usage(
 
 historical_all = [] # 全サービスのHistorical Total
 
-for service in 0..30 # サービスは31個
-
-  struct = resp.results_by_time[0]["groups"][service] # object
+responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws::CostExplorer::Types::GetDimensionValuesResponse"
 
   historical = struct["metrics"]["BlendedCost"].amount.to_i # 各サービスのHistorical Total
-  puts "Historical Total: " + struct.keys[0] + ": " + cost.to_s
+  puts "Historical Total: " + struct.keys[0] + ": " + historical.to_s
 
   forecast = historical * (last_day - past_days) / past_days
-  puts "Forecast Total: " + struct.keys[0] + ": " + forecast
+  puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s
 
   historical_all << historical
 
