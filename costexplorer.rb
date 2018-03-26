@@ -2,6 +2,8 @@ require "aws-sdk"
 require "aws-sdk-costexplorer"
 require "json"
 require "date"
+require "pry"
+require 'expanded_date'
 
 creds = JSON.load(File.read("../Documents/credentials/aws_credentials.json")) # credentialsはファイル分ける
 Aws.config.update({
@@ -13,6 +15,11 @@ start_day = Date.today.to_s.slice(0,8) + "01" # 月初
 end_day = Date.today.to_s # 実行日の前日までのコストは、AWSではDate.todayまででよい
 # ∵ end_dayを本日としてdailyコストを取得した場合、
 #   各daily costが「1~2日」=1日の間、「2~3日」=2日、……「前日〜本日」=前日の間 となる
+past_days = end_day.slice(8,9).to_i - start_day.slice(8,9).to_i # 月初から前日までの日数
+last_day = Date.today.end_of_month.mday # 今月末の日付 (integerなので注意)
+
+
+# binding.pry
 
 ce = Aws::CostExplorer::Client.new
 
@@ -29,9 +36,8 @@ ce = Aws::CostExplorer::Client.new
 #
 # values = []
 #
-# for num in 0..30
+# for num in 0..30 # サービス31個
 #    values << services[0][num].value
-#    # puts resp[0][num].value
 # end
 # puts values
 
@@ -42,28 +48,11 @@ resp = ce.get_cost_and_usage(params={
   },
   granularity: "MONTHLY", # accepts DAILY, MONTHLY
   filter: {
-    # or: [
-    #   {
-    #     # recursive Expression
-    #   },
-    # ],
-    # and: [
-    #   {
-    #     # recursive Expression
-    #   },
-    # ],
-    # not: {
-    #   # recursive Expression
-    # },
     dimensions: {
       key: "SERVICE", # accepts AZ, INSTANCE_TYPE, LINKED_ACCOUNT, OPERATION, PURCHASE_TYPE, REGION, SERVICE, USAGE_TYPE, USAGE_TYPE_GROUP, RECORD_TYPE, OPERATING_SYSTEM, TENANCY, SCOPE, PLATFORM, SUBSCRIPTION_ID, LEGAL_ENTITY_NAME, DEPLOYMENT_OPTION, DATABASE_ENGINE, CACHE_ENGINE, INSTANCE_TYPE_FAMILY
       # values: ["AWS S3 (Simple Storage Service)"] # => nil
       values: ["AWS CloudTrail", "AWS CodeCommit", "AWS Config", "AWS Data Pipeline", "AWS Database Migration Service", "AWS Key Management Service", "AWS Lambda", "AWS Support (Business)", "Amazon API Gateway", "Amazon CloudFront", "Amazon CloudSearch", "Amazon DynamoDB", "Amazon EC2 Container Registry (ECR)", "Amazon ElastiCache", "EC2 - Other", "Amazon Elastic Compute Cloud - Compute", "Amazon Elastic Load Balancing", "Amazon Elastic MapReduce", "Amazon Elasticsearch Service", "Amazon QuickSight", "Amazon Rekognition", "Amazon Relational Database Service", "Amazon Route 53", "Amazon Simple Email Service", "Amazon Simple Notification Service", "Amazon Simple Queue Service", "Amazon Simple Storage Service", "Amazon SimpleDB", "Amazon Virtual Private Cloud", "AmazonCloudWatch", "Tax"],
     },
-    # tags: {
-    #   key: "TagKey",
-    #   values: ["Value"],
-    # },
   },
   metrics: ["BlendedCost"],
   group_by: [
@@ -72,16 +61,16 @@ resp = ce.get_cost_and_usage(params={
       key: "SERVICE",
     },
   ],
-  # next_page_token: "NextPageToken",
 })
 
-costs = []
+historical_all = []
 
-for service in 0..30 # taxまで合わせて31個
+for service in 0..30 # サービスは31個
   struct = resp.results_by_time[0]["groups"][service]
-  cost = struct["metrics"]["BlendedCost"].amount.to_i
-  puts struct.keys[0] + ": " + cost.to_s
-  costs << cost
+  historical = struct["metrics"]["BlendedCost"].amount.to_i
+  # puts "Historical Total: " + struct.keys[0] + ": " + cost.to_s
+  forecast = historical * (last_day - past_days) / past_days
+  # puts "Forecast Total: " + struct.keys[0] + ": " + forecast
+  historical_all << historical
 end
-p costs.inject{ |sum, i| sum + i }
-puts resp
+p historical_all.inject{ |sum, i| sum + i }
