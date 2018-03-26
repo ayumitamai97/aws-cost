@@ -65,6 +65,7 @@ responses = ce.get_cost_and_usage(
 )
 
 historical_all = [] # 全サービスのHistorical Total
+forecast_all = [] # 全サービスのForecast
 
 responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws::CostExplorer::Types::GetDimensionValuesResponse"
 
@@ -75,7 +76,9 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
   puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s
 
   historical_all << historical
+  forecast_all << forecast
 
 end
 
-p historical_all.inject{ |sum, i| sum + i }
+puts "Historical Total Cost in All Services: " + historical_all.inject{ |sum, i| sum + i }.to_s
+puts "Forecast Cost in All Services: " + forecast_all.inject{ |sum, i| sum + i }
