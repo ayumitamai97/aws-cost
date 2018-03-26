@@ -66,7 +66,7 @@ forecast_all = [] # 全サービスのForecast
 
 responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws::CostExplorer::Types::GetDimensionValuesResponse"
 
-  historical = struct["metrics"]["BlendedCost"].amount.to_i # 各サービスのHistorical Total
+  historical = struct["metrics"]["BlendedCost"].amount.to_f # 各サービスのHistorical Total
   puts "Historical Total: " + struct.keys[0] + ": " + historical.to_s
 
   forecast = historical * (last_day - past_days) / past_days
