@@ -14,12 +14,12 @@ end_day = (Date.today - 1).to_s # 実行日の前日
 
 ce = Aws::CostExplorer::Client.new
 
-ce.get_cost_and_usage({
+resp = ce.get_cost_and_usage(params={
   time_period: {
     start: start_day, # required
     end: end_day, # required
   },
-  granularity: "DAILY", # accepts DAILY, MONTHLY
+  granularity: "MONTHLY", # accepts DAILY, MONTHLY
   filter: {
     # or: [
     #   {
@@ -36,7 +36,7 @@ ce.get_cost_and_usage({
     # },
     dimensions: {
       key: "SERVICE", # accepts AZ, INSTANCE_TYPE, LINKED_ACCOUNT, OPERATION, PURCHASE_TYPE, REGION, SERVICE, USAGE_TYPE, USAGE_TYPE_GROUP, RECORD_TYPE, OPERATING_SYSTEM, TENANCY, SCOPE, PLATFORM, SUBSCRIPTION_ID, LEGAL_ENTITY_NAME, DEPLOYMENT_OPTION, DATABASE_ENGINE, CACHE_ENGINE, INSTANCE_TYPE_FAMILY
-      values: ["CrowdTrail"],
+      values: ["EC2-Instances", "DynamoDB"],
     },
     # tags: {
     #   key: "TagKey",
@@ -44,11 +44,13 @@ ce.get_cost_and_usage({
     # },
   },
   metrics: ["BlendedCost"],
-  # group_by: [
-  #   {
-  #     type: "DIMENSION", # accepts DIMENSION, TAG
-  #     key: "GroupDefinitionKey",
-  #   },
-  # ],
+  group_by: [
+    {
+      type: "DIMENSION", # accepts DIMENSION, TAG
+      key: "SERVICE",
+    },
+  ],
   # next_page_token: "NextPageToken",
 })
+
+puts resp.results_by_time#[0].total["BlendedCost"].amount
