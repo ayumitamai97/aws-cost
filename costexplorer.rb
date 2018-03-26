@@ -63,14 +63,20 @@ resp = ce.get_cost_and_usage(params={
   ],
 })
 
-historical_all = []
+historical_all = [] # 全サービスのHistorical Total
 
 for service in 0..30 # サービスは31個
-  struct = resp.results_by_time[0]["groups"][service]
-  historical = struct["metrics"]["BlendedCost"].amount.to_i
-  # puts "Historical Total: " + struct.keys[0] + ": " + cost.to_s
+
+  struct = resp.results_by_time[0]["groups"][service] # object
+
+  historical = struct["metrics"]["BlendedCost"].amount.to_i # 各サービスのHistorical Total
+  puts "Historical Total: " + struct.keys[0] + ": " + cost.to_s
+
   forecast = historical * (last_day - past_days) / past_days
-  # puts "Forecast Total: " + struct.keys[0] + ": " + forecast
+  puts "Forecast Total: " + struct.keys[0] + ": " + forecast
+
   historical_all << historical
+
 end
+
 p historical_all.inject{ |sum, i| sum + i }
