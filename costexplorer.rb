@@ -23,16 +23,17 @@ ce = Aws::CostExplorer::Client.new
 #   end: end_day, # required
 #   },
 #   dimension: "SERVICE", # required, accepts AZ, INSTANCE_TYPE, LINKED_ACCOUNT, OPERATION, PURCHASE_TYPE, REGION, SERVICE, USAGE_TYPE, USAGE_TYPE_GROUP, RECORD_TYPE, OPERATING_SYSTEM, TENANCY, SCOPE, PLATFORM, SUBSCRIPTION_ID, LEGAL_ENTITY_NAME, DEPLOYMENT_OPTION, DATABASE_ENGINE, CACHE_ENGINE, INSTANCE_TYPE_FAMILY
-#   context: "COST_AND_USAGE", # accepts COST_AND_USAGE, RESERVATIONS
+#   context: "COST_AND_USAGE", # accepts COST_A7ND_USAGE, RESERVATIONS
 #   # next_page_token: "NextPageToken",
 # })
 #
 # values = []
 #
 # for num in 0..30
-#    values << resp[0][num].value
+#    values << services[0][num].value
 #    # puts resp[0][num].value
 # end
+# puts values
 
 resp = ce.get_cost_and_usage(params={
   time_period: {
@@ -56,6 +57,7 @@ resp = ce.get_cost_and_usage(params={
     # },
     dimensions: {
       key: "SERVICE", # accepts AZ, INSTANCE_TYPE, LINKED_ACCOUNT, OPERATION, PURCHASE_TYPE, REGION, SERVICE, USAGE_TYPE, USAGE_TYPE_GROUP, RECORD_TYPE, OPERATING_SYSTEM, TENANCY, SCOPE, PLATFORM, SUBSCRIPTION_ID, LEGAL_ENTITY_NAME, DEPLOYMENT_OPTION, DATABASE_ENGINE, CACHE_ENGINE, INSTANCE_TYPE_FAMILY
+      # values: ["AWS S3 (Simple Storage Service)"] # => nil
       values: ["AWS CloudTrail", "AWS CodeCommit", "AWS Config", "AWS Data Pipeline", "AWS Database Migration Service", "AWS Key Management Service", "AWS Lambda", "AWS Support (Business)", "Amazon API Gateway", "Amazon CloudFront", "Amazon CloudSearch", "Amazon DynamoDB", "Amazon EC2 Container Registry (ECR)", "Amazon ElastiCache", "EC2 - Other", "Amazon Elastic Compute Cloud - Compute", "Amazon Elastic Load Balancing", "Amazon Elastic MapReduce", "Amazon Elasticsearch Service", "Amazon QuickSight", "Amazon Rekognition", "Amazon Relational Database Service", "Amazon Route 53", "Amazon Simple Email Service", "Amazon Simple Notification Service", "Amazon Simple Queue Service", "Amazon Simple Storage Service", "Amazon SimpleDB", "Amazon Virtual Private Cloud", "AmazonCloudWatch", "Tax"],
     },
     # tags: {
@@ -75,10 +77,11 @@ resp = ce.get_cost_and_usage(params={
 
 costs = []
 
-for service in 0..29
+for service in 0..30 # taxまで合わせて31個
   struct = resp.results_by_time[0]["groups"][service]
   cost = struct["metrics"]["BlendedCost"].amount.to_i
   puts struct.keys[0] + ": " + cost.to_s
   costs << cost
 end
 p costs.inject{ |sum, i| sum + i }
+puts resp
