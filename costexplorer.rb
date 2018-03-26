@@ -69,4 +69,12 @@ resp = ce.get_cost_and_usage(params={
   # next_page_token: "NextPageToken",
 })
 
-puts resp.results_by_time[0]
+costs = []
+
+for service in 0..29
+  struct = resp.results_by_time[0]["groups"][service]
+  cost = struct["metrics"]["BlendedCost"].amount.to_i
+  # puts struct.keys[0] + ": " + cost
+  costs << cost
+end
+p costs.inject{ |sum, i| sum + i }
