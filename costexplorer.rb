@@ -78,4 +78,4 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
 end
 
 puts "Historical Total Cost in All Services: " + historical_all.inject{ |sum, i| sum + i }.to_s
-puts "Forecast Cost in All Services: " + forecast_all.inject{ |sum, i| sum + i }
+puts "Forecast Cost in All Services: " + forecast_all.inject{ |sum, i| sum + i }.to_s
