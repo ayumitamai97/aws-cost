@@ -32,7 +32,6 @@ def authorize
 end
 
 sheet_service = Google::Apis::SheetsV4::SheetsService.new
-sheet_service.client_options.application_name = 'nyaahara sama'
 sheet_service.authorization = authorize
 
 
