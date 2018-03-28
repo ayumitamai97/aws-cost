@@ -1,4 +1,12 @@
 module Authorize
+
+  OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
+  APPLICATION_NAME = 'My Project'
+  CLIENT_SECRETS_PATH = '../Documents/credentials/client_secret.json'
+  CREDENTIALS_PATH = File.join(Dir.home, '.credentials',
+    "sheets.googleapis.com-ruby-quickstart.yaml")
+  SCOPE = Google::Apis::SheetsV4::AUTH_SPREADSHEETS # 読みとりと書き込み
+
   def authorize
     FileUtils.mkdir_p(File.dirname(CREDENTIALS_PATH))
 

@@ -5,7 +5,7 @@ require "date"
 require "pry"
 require 'expanded_date'
 
-module GenClient
+module GenClient # クライアントの生成
   def ce_client
     creds = JSON.load(File.read("../Documents/credentials/aws_credentials.json")) # credentialsはファイル分ける
     Aws.config.update({
