@@ -48,8 +48,8 @@ responses = ce.get_cost_and_usage(
     filter: {
       dimensions: {
         key: "SERVICE", # accepts AZ, INSTANCE_TYPE, LINKED_ACCOUNT, OPERATION, PURCHASE_TYPE, REGION, SERVICE, USAGE_TYPE, USAGE_TYPE_GROUP, RECORD_TYPE, OPERATING_SYSTEM, TENANCY, SCOPE, PLATFORM, SUBSCRIPTION_ID, LEGAL_ENTITY_NAME, DEPLOYMENT_OPTION, DATABASE_ENGINE, CACHE_ENGINE, INSTANCE_TYPE_FAMILY
-        # values: ["AWS CloudTrail", "AWS CodeCommit", "AWS Config", "AWS Data Pipeline", "AWS Database Migration Service", "AWS Key Management Service", "AWS Lambda", "AWS Support (Business)", "Amazon API Gateway", "Amazon CloudFront", "Amazon CloudSearch", "Amazon DynamoDB", "Amazon EC2 Container Registry (ECR)", "Amazon ElastiCache", "EC2 - Other", "Amazon Elastic Compute Cloud - Compute", "Amazon Elastic Load Balancing", "Amazon Elastic MapReduce", "Amazon Elasticsearch Service", "Amazon QuickSight", "Amazon Rekognition", "Amazon Relational Database Service", "Amazon Route 53", "Amazon Simple Email Service", "Amazon Simple Notification Service", "Amazon Simple Queue Service", "Amazon Simple Storage Service", "Amazon SimpleDB", "Amazon Virtual Private Cloud", "AmazonCloudWatch", "Tax"] # all services
-        values: ["Amazon Simple Storage Service", "Amazon EC2 Container Registry (ECR)", "Amazon CloudSearch", "Amazon Relational Database Service", "Amazon DynamoDB", "Amazon CloudFront", "Amazon ElastiCache" ] # required forecast costs
+        values: ["AWS CloudTrail", "AWS CodeCommit", "AWS Config", "AWS Data Pipeline", "AWS Database Migration Service", "AWS Key Management Service", "AWS Lambda", "AWS Support (Business)", "Amazon API Gateway", "Amazon CloudFront", "Amazon CloudSearch", "Amazon DynamoDB", "Amazon EC2 Container Registry (ECR)", "Amazon ElastiCache", "EC2 - Other", "Amazon Elastic Compute Cloud - Compute", "Amazon Elastic Load Balancing", "Amazon Elastic MapReduce", "Amazon Elasticsearch Service", "Amazon QuickSight", "Amazon Rekognition", "Amazon Relational Database Service", "Amazon Route 53", "Amazon Simple Email Service", "Amazon Simple Notification Service", "Amazon Simple Queue Service", "Amazon Simple Storage Service", "Amazon SimpleDB", "Amazon Virtual Private Cloud", "AmazonCloudWatch", "Tax"] # all services
+        # values: ["Amazon Simple Storage Service", "Amazon EC2 Container Registry (ECR)", "Amazon CloudSearch", "Amazon Relational Database Service", "Amazon DynamoDB", "Amazon CloudFront", "Amazon ElastiCache" ] # required forecast costs
       },
     },
     metrics: ["BlendedCost"],
@@ -71,7 +71,15 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
   # puts "Historical Total: " + struct.keys[0] + ": " + historical.to_s
 
   forecast = historical * (last_day - past_days) / past_days
+  if struct.keys[0] == "Amazon Simple Storage Service" ||
+    struct.keys[0] == "Amazon EC2 Container Registry (ECR)" ||
+    struct.keys[0] == "Amazon CloudSearch" ||
+    struct.keys[0] == "Amazon Relational Database Service" ||
+    struct.keys[0] == "Amazon DynamoDB" ||
+    struct.keys[0] == "Amazon CloudFront" ||
+    struct.keys[0] == "Amazon ElastiCache" 
   puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s
+end
 
   historical_all << historical
   forecast_all << forecast
