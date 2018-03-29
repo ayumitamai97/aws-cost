@@ -1,7 +1,7 @@
-require_relative "gen_client"
-include GenClient
+require_relative "aws_config"
+include AwsConfig
 
-GenClient.ce_client
+AwsConfig.ce_client
 
 start_day = Date.today.to_s.slice(0,8) + "01" # 月初
 end_day = Date.today.to_s # 実行日の前日までのコストは、AWSではDate.todayまででよい
@@ -22,9 +22,10 @@ services = ce.get_dimension_values({
 
 values = []
 
-
+trial = -2
 
 services.dimension_values.each do |service|
-   values << service.value
+  trial += 1
+  puts trial.to_s + ": " + service.value
+  # values << service.value
 end
-puts values
