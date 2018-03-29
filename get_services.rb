@@ -10,10 +10,9 @@ end_day = Date.today.to_s # 実行日の前日までのコストは、AWSではD
 
 ce = Aws::CostExplorer::Client.new
 services = ce.get_dimension_values({
-  # search_string: "",
-  time_period: { # required
-    start: start_day, # required
-  end: end_day, # required
+  time_period: {
+    start: start_day,
+    end: end_day,
   },
   dimension: "SERVICE", # required, accepts AZ, INSTANCE_TYPE, LINKED_ACCOUNT, OPERATION, PURCHASE_TYPE, REGION, SERVICE, USAGE_TYPE, USAGE_TYPE_GROUP, RECORD_TYPE, OPERATING_SYSTEM, TENANCY, SCOPE, PLATFORM, SUBSCRIPTION_ID, LEGAL_ENTITY_NAME, DEPLOYMENT_OPTION, DATABASE_ENGINE, CACHE_ENGINE, INSTANCE_TYPE_FAMILY
   context: "COST_AND_USAGE", # accepts COST_A7ND_USAGE, RESERVATIONS
@@ -22,10 +21,11 @@ services = ce.get_dimension_values({
 
 values = []
 
-trial = -2
+trial = -1
 
 services.dimension_values.each do |service|
-  trial += 1
+  trial += 1 if service.value != "AWS Cost Explorer"
+  # Cost ExplorerというサービスはCost Explorerのコスト一覧に表示されないため
   puts trial.to_s + ": " + service.value
   # values << service.value
 end

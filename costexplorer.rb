@@ -54,7 +54,7 @@ forecast_all = [] # 全サービスのForecast
 responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws::CostExplorer::Types::GetDimensionValuesResponse"
 
   historical = struct["metrics"]["BlendedCost"].amount.to_f # 各サービスのHistorical Total
-  # puts "Historical Total: " + struct.keys[0] + ": " + historical.to_s
+  puts trial.to_s + "Historical Total: " + struct.keys[0] + ": " + historical.to_s
 
   forecast = historical * (last_day - past_days) / past_days
 
@@ -82,4 +82,4 @@ forecast_selected = [
 puts "Forecast Cost in All Services: " + forecast_all.inject{ |sum, i| sum + i }.to_s
 
 # SpreadSheet.ce_on_ss(forecast_selected) # スプレッドシートにコスト予報を出力
-puts forecast_selected
+# puts forecast_selected
