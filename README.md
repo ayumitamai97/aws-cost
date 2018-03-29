@@ -5,6 +5,7 @@
 ### 中身
 以下のようなURLからOAuth 2.0 クライアント IDをダウンロード
 https://console.developers.google.com/apis/credentials?project=northern-bot-199407&hl=ja
+
 クライアントIDの取得を含むクイックスタートは以下
 https://developers.google.com/sheets/quickstart/ruby?hl=ja
 
