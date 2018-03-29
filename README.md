@@ -1,4 +1,17 @@
-# jsonファイルの中身
+# secretsの相対パス
+## Google Spreadsheet
+### path
+../Documents/credentials/client_secret.json
+### 中身
+以下のようなURLからOAuth 2.0 クライアント IDをダウンロード
+https://console.developers.google.com/apis/credentials?project=northern-bot-199407&hl=ja
+クライアントIDの取得を含むクイックスタートは以下
+https://developers.google.com/sheets/quickstart/ruby?hl=ja
+
+## AWS
+### path
+../Documents/credentials/aws_credentials.json
+### 中身
 {
   "Access key ID": "ほげ",
   "Secret access key": "ふが"
