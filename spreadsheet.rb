@@ -4,10 +4,8 @@ module SpreadSheet
   require 'googleauth/stores/file_token_store'
   require_relative "authorize_ss"
 
-
-  def ce_on_ss # Cost Explorer取得結果をスプレッドシートに出力
+  def self.ce_on_ss(array) # Cost Explorer取得結果をスプレッドシートに出力
     include Authorize
-
 
     sheet_service = Google::Apis::SheetsV4::SheetsService.new
     sheet_service.authorization = authorize
@@ -15,7 +13,7 @@ module SpreadSheet
     value_range = Google::Apis::SheetsV4::ValueRange.new
     value_range.range = 'シート3!B5:J5'
     value_range.major_dimension = 'ROWS'
-    value_range.values = [["forecast_selected"]]
+    value_range.values = [array]
 
     sheet_service.update_spreadsheet_value(
       '1n5kwTbKDjOEFnF3BJk6INvTvTaQPMa08T-irQSlvYkU',
@@ -26,8 +24,3 @@ module SpreadSheet
   end
 
 end
-
-include Authorize
-Authorize.authorize
-include SpreadSheet
-SpreadSheet.ce_on_ss

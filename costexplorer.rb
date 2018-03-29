@@ -6,8 +6,12 @@ require "pry"
 require "expanded_date"
 require_relative "gen_client"
 require_relative "spreadsheet"
+
 include GenClient
 include SpreadSheet
+include Authorize
+
+Authorize.authorize
 
 GenClient.ce_client
 ce = Aws::CostExplorer::Client.new
@@ -32,7 +36,6 @@ responses = ce.get_cost_and_usage(
       dimensions: {
         key: "SERVICE", # accepts AZ, INSTANCE_TYPE, LINKED_ACCOUNT, OPERATION, PURCHASE_TYPE, REGION, SERVICE, USAGE_TYPE, USAGE_TYPE_GROUP, RECORD_TYPE, OPERATING_SYSTEM, TENANCY, SCOPE, PLATFORM, SUBSCRIPTION_ID, LEGAL_ENTITY_NAME, DEPLOYMENT_OPTION, DATABASE_ENGINE, CACHE_ENGINE, INSTANCE_TYPE_FAMILY
         values: ["Amazon Simple Storage Service", "Amazon EC2 Container Registry (ECR)", "Amazon CloudSearch", "Amazon Relational Database Service", "Amazon DynamoDB", "Amazon CloudFront", "Amazon ElastiCache", "AWS CloudTrail", "AWS CodeCommit", "AWS Config", "AWS Data Pipeline", "AWS Database Migration Service", "AWS Key Management Service", "AWS Lambda", "AWS Support (Business)", "Amazon API Gateway", "EC2 - Other", "Amazon Elastic Compute Cloud - Compute", "Amazon Elastic Load Balancing", "Amazon Elastic MapReduce", "Amazon Elasticsearch Service", "Amazon QuickSight", "Amazon Rekognition", "Amazon Route 53", "Amazon Simple Email Service", "Amazon Simple Notification Service", "Amazon Simple Queue Service",  "Amazon SimpleDB", "Amazon Virtual Private Cloud", "AmazonCloudWatch", "Tax"] # all services
-        # values: keys # required forecast costs
       },
     },
     metrics: ["BlendedCost"],
@@ -57,7 +60,7 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
 
   keys.each do |key|
     if struct.keys[0] == key
-      # puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s
+      puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s # 確認用
     end
   end
   historical_all << historical
@@ -75,7 +78,7 @@ forecast_selected = [
   forecast_all[13] # ElastiCache
 ]
 
-SpreadSheet.ce_on_ss
-# puts forecast_selected
 # puts "Historical Total Cost in All Services: " + historical_all.inject{ |sum, i| sum + i }.to_s
 puts "Forecast Cost in All Services: " + forecast_all.inject{ |sum, i| sum + i }.to_s
+
+SpreadSheet.ce_on_ss(forecast_selected) # スプレッドシートにコスト予報を出力
