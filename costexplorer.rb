@@ -4,16 +4,16 @@ require "json"
 require "date"
 require "pry"
 require "expanded_date"
-require_relative "gen_client"
+require_relative "aws_config"
 require_relative "spreadsheet"
 
-include GenClient
+include AwsConfig
 include SpreadSheet
 include Authorize
 
 Authorize.authorize
 
-GenClient.ce_client
+AwsConfig.ce_client
 ce = Aws::CostExplorer::Client.new
 
 start_day = Date.today.to_s.slice(0,8) + "01" # 月初
@@ -81,4 +81,5 @@ forecast_selected = [
 # puts "Historical Total Cost in All Services: " + historical_all.inject{ |sum, i| sum + i }.to_s
 puts "Forecast Cost in All Services: " + forecast_all.inject{ |sum, i| sum + i }.to_s
 
-SpreadSheet.ce_on_ss(forecast_selected) # スプレッドシートにコスト予報を出力
+# SpreadSheet.ce_on_ss(forecast_selected) # スプレッドシートにコスト予報を出力
+puts forecast_selected

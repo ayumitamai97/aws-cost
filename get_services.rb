@@ -22,6 +22,8 @@ services = ce.get_dimension_values({
 
 values = []
 
+
+
 services.dimension_values.each do |service|
    values << service.value
 end
