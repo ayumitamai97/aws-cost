@@ -17,7 +17,8 @@ AwsConfig.ce_client
 ce = Aws::CostExplorer::Client.new
 
 start_day = Date.today.to_s.slice(0,8) + "01" # 月初
-end_day = "2018-03-26" # 実行日の前日までのコストは、AWSではDate.todayまででよい
+end_day =  Date.today.to_s # 実行日の前日までのコストは、AWSではDate.todayまででよい
+# end_day = "2018-03-26" # 実行日の前日までのコストは、AWSではDate.todayまででよい
 # ∵ end_dayを本日としてdailyコストを取得した場合、
 #   各daily costが「1~2日」=1日の間、「2~3日」=2日、……「前日〜本日」=前日の間 となる
 past_days = end_day.slice(8,9).to_i - start_day.slice(8,9).to_i # 月初から前日までの日数
