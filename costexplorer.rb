@@ -17,7 +17,7 @@ AwsConfig.ce_client
 ce = Aws::CostExplorer::Client.new
 
 start_day = Date.today.to_s.slice(0,8) + "01" # 月初
-end_day = Date.today.to_s # 実行日の前日までのコストは、AWSではDate.todayまででよい
+end_day = "2018-03-26" # 実行日の前日までのコストは、AWSではDate.todayまででよい
 # ∵ end_dayを本日としてdailyコストを取得した場合、
 #   各daily costが「1~2日」=1日の間、「2~3日」=2日、……「前日〜本日」=前日の間 となる
 past_days = end_day.slice(8,9).to_i - start_day.slice(8,9).to_i # 月初から前日までの日数
@@ -51,6 +51,8 @@ responses = ce.get_cost_and_usage(
 historical_all = [] # 全サービスのHistorical Total
 forecast_all = [] # 全サービスのForecast
 
+puts responses.results_by_time
+
 responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws::CostExplorer::Types::GetDimensionValuesResponse"
 
   historical = struct["metrics"]["BlendedCost"].amount.to_f # 各サービスのHistorical Total
@@ -68,6 +70,8 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
 
 end
 
+forecast_all_total = forecast_all.inject{ |sum, i| sum + i }.to_s
+
 forecast_selected = [
   forecast_all[26], # S3
   forecast_all[12], # ECR
@@ -75,10 +79,12 @@ forecast_selected = [
   forecast_all[21], # RDS
   forecast_all[11], # DynamoDB
   forecast_all[9], # CloudFront
-  forecast_all[13] # ElastiCache
+  forecast_all[13], # ElastiCache
+  "",
+  forecast_all_total
 ]
 
-# puts "Historical Total Cost in All Services: " + historical_all.inject{ |sum, i| sum + i }.to_s
-puts "Forecast Cost in All Services: " + forecast_all.inject{ |sum, i| sum + i }.to_s
+puts "Historical Total Cost in All Services: " + historical_all.inject{ |sum, i| sum + i }.to_s
+puts "Forecast Cost in All Services: " + forecast_all_total
 
 SpreadSheet.ce_on_ss(forecast_selected) # スプレッドシートにコスト予報を出力
