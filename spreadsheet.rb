@@ -11,12 +11,12 @@ module SpreadSheet
     sheet_service.authorization = authorize
 
     value_range = Google::Apis::SheetsV4::ValueRange.new
-    value_range.range = 'シート3!B5:J5'
+    value_range.range = '3月（テスト）!B5:J5'
     value_range.major_dimension = 'ROWS'
     value_range.values = [array]
 
     sheet_service.update_spreadsheet_value(
-      '1n5kwTbKDjOEFnF3BJk6INvTvTaQPMa08T-irQSlvYkU',
+      '1fA-vQNKyigvruklRlFuwmctiHPOlXJmO4MbU1JYfaoY', # 週報用コストシート
       value_range.range,
       value_range,
       value_input_option: 'USER_ENTERED',
