@@ -62,10 +62,9 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
   forecast = historical * (last_day - past_days) / past_days
 
   keys.each do |key|
-    if struct.keys[0] == key
-      puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s # 確認用
-    end
+    puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s if struct.keys[0] == key # 確認用
   end
+
   historical_all << historical
   forecast_all << forecast
 
