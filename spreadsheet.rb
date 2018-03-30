@@ -11,7 +11,7 @@ module SpreadSheet
     sheet_service.authorization = authorize
 
     value_range = Google::Apis::SheetsV4::ValueRange.new
-    value_range.range = '3月（テスト）!B5:J5'
+    value_range.range = '3月!B5:J5'
     value_range.major_dimension = 'ROWS'
     value_range.values = [array]
 

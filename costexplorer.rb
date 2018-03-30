@@ -18,7 +18,6 @@ ce = Aws::CostExplorer::Client.new
 
 start_day = Date.today.to_s.slice(0, 8) + "01" # 月初
 end_day = Date.today.to_s # 実行日の前日までのコストは、AWSではDate.todayまででよい
-# end_day = "2018-03-26" # 実行日の前日までのコストは、AWSではDate.todayまででよい
 # ∵ end_dayを本日としてdailyコストを取得した場合、
 #   各daily costが「1~2日」=1日の間、「2~3日」=2日、……「前日〜本日」=前日の間 となる
 past_days = end_day.slice(8, 9).to_i - start_day.slice(8, 9).to_i # 月初から前日までの日数
@@ -60,6 +59,7 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
 
   forecast = historical * (last_day - past_days) / past_days
 
+  # このkeyをうまく利用したい…
   keys.each do |key|
     puts "Forecast Total: " + struct.keys[0] + ": " + forecast.to_s if
      struct.keys[0] == key # 確認用
@@ -70,10 +70,11 @@ responses.results_by_time[0]["groups"].each do |struct| # struct は object "Aws
 end
 
 forecast_all_total = forecast_all.inject { |sum, i| sum + i }.to_s
+forecast_ec2 = forecast_all[14] + forecast_all[15] + forecast_all[16]
 
 forecast_selected = [
   forecast_all[26], # S3
-  forecast_all[12], # ECR
+  forecast_ec2, # ECR
   forecast_all[10], # CloudSearch
   forecast_all[21], # RDS
   forecast_all[11], # DynamoDB
