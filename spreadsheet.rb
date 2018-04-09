@@ -3,6 +3,7 @@ module SpreadSheet
   require 'googleauth'
   require 'googleauth/stores/file_token_store'
   require_relative "authorize_ss"
+  require "date"
 
   def self.ce_on_ss(array) # Cost Explorer取得結果をスプレッドシートに出力
     include Authorize
@@ -11,7 +12,8 @@ module SpreadSheet
     sheet_service.authorization = authorize
 
     value_range = Google::Apis::SheetsV4::ValueRange.new
-    value_range.range = '3月!B5:J5'
+    this_month = Date.today.month.to_s
+    value_range.range = "#{this_month}月!B5:J5"
     value_range.major_dimension = 'ROWS'
     value_range.values = [array]
 
