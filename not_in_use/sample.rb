@@ -1,13 +1,12 @@
 require 'google/apis/sheets_v4'
 require 'googleauth'
 require 'googleauth/stores/file_token_store'
-require 'json'
 
 require 'fileutils'
 
 OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
 APPLICATION_NAME = 'My Project'
-CLIENT_SECRETS_PATH = "../Documents/credentials/GoogleClientSecret.json"
+CLIENT_SECRETS_PATH = '../Documents/credentials/client_secret.json'
 CREDENTIALS_PATH = File.join(Dir.home, '.credentials',
                              "sheets.googleapis.com-ruby-quickstart.yaml")
 SCOPE = Google::Apis::SheetsV4::AUTH_SPREADSHEETS_READONLY
@@ -16,13 +15,13 @@ SCOPE = Google::Apis::SheetsV4::AUTH_SPREADSHEETS_READONLY
 # Ensure valid credentials, either by restoring from the saved credentials
 # files or intitiating an OAuth2 authorization. If authorization is required,
 # the user's default browser will be launched to approve the request.
-
+#
 # @return [Google::Auth::UserRefreshCredentials] OAuth2 credentials
 def authorize
   FileUtils.mkdir_p(File.dirname(CREDENTIALS_PATH))
 
   client_id = Google::Auth::ClientId.from_file(CLIENT_SECRETS_PATH)
-  token_store = Google::Auth::Stores::FileTokenStore.new(file: CLIENT_SECRETS_PATH)
+  token_store = Google::Auth::Stores::FileTokenStore.new(file: CREDENTIALS_PATH)
   authorizer = Google::Auth::UserAuthorizer.new(
     client_id, SCOPE, token_store)
   user_id = 'default'
@@ -47,12 +46,12 @@ service.authorization = authorize
 
 # Prints the names and majors of students in a sample spreadsheet:
 # https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-spreadsheet_id = '1dMpXWDUay_6nxz8cHUCvZZpVH_t-YHa-c8E-LsaCXWQ'
-range = '並べ替え前!A2:E2'
+spreadsheet_id = '1n5kwTbKDjOEFnF3BJk6INvTvTaQPMa08T-irQSlvYkU'
+range = 'シート3!B5:J5'
 response = service.get_spreadsheet_values(spreadsheet_id, range)
-puts 'Name, Major:'
-puts 'No data found.' if response.values.empty?
 response.values.each do |row|
   # Print columns A and E, which correspond to indices 0 and 4.
-  puts "#{row[0]}, #{row[4]}"
+  for num in 0..8
+    puts "#{row[num]}"
+  end
 end
