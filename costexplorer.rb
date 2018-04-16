@@ -35,11 +35,6 @@ $end_day = Date.today.to_s # 実行日の前日までのコストは、AWSでは
 $past_days = $end_day.slice(8, 9).to_i - $start_day.slice(8, 9).to_i # 月初から前日までの日数
 $last_day = Date.today.end_of_month.mday # 今月末の日付 (integerなので注意)
 
-monthly_responses = get_responses("MONTHLY", monthly_values)
-daily_responses = get_responses("DAILY", daily_values)
-
-structs = monthly_responses.results_by_time[0]["groups"]
-
 historicals_all = [] # 全サービスのHistorical Total
 forecasts_particular = [] # "n月"シートに入力するコストの合計
 forecasts_all = [] # 利用サービス全てのコストの合計
@@ -71,6 +66,11 @@ def get_responses(granularity, values)
     }
   )
 end
+
+monthly_responses = get_responses("MONTHLY", monthly_values)
+daily_responses = get_responses("DAILY", daily_values)
+
+structs = monthly_responses.results_by_time[0]["groups"]
 
 # puts monthly_responses.results_by_time
 
