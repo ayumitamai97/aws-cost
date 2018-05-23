@@ -40,6 +40,6 @@ AWS Cost Explorer APIを用いてコストを取得し、スプレッドシー�
 ### spreadsheet.rb
 シートID、シート名、出力先セルなどの設定
 
-##その他
+## その他
 ### not_in_use/
 使いません
